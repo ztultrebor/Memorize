@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct CardView: View {
+    let content: String
     @State var isFaceUp = false
-    let cardBase = RoundedRectangle(cornerRadius: 10)
     var body: some View {
         ZStack {
+            let cardBase = RoundedRectangle(cornerRadius: 10)
             if isFaceUp {
                 cardBase.fill(.white)
                 cardBase.strokeBorder(lineWidth: 2)
-                Text("!👻!")
+                Text(content)
                     .font(.largeTitle)
                     .imageScale(.large)
             } else {cardBase}
@@ -26,15 +27,13 @@ struct CardView: View {
 
 struct ContentView: View {
     var body: some View {
+        let cardFaces = ["👻", "💀", "🎃", "😈", "😱", "👹", "☠️", "👽"]
         HStack {
-            CardView()
-            CardView()
-            CardView()
-            CardView()
+            ForEach(cardFaces, id: \.self) { face in CardView(content: face) }
         }
-            .foregroundColor(.purple)
-            .foregroundStyle(.tint)
-            .padding()
+        .foregroundColor(.purple)
+        .foregroundStyle(.tint)
+        .padding()
     }
 }
 
