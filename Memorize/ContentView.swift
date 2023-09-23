@@ -13,14 +13,14 @@ struct CardView: View {
     let cardBase = RoundedRectangle(cornerRadius: 10)
     var body: some View {
         ZStack {
-            if isFaceUp {
-                cardBase.fill(.white)
-                cardBase.strokeBorder(lineWidth: 2)
-                Text(content)
-                    .font(.largeTitle)
-                    .imageScale(.large)
-            } else {cardBase}
+            cardBase.fill(.white)
+            cardBase
+                .strokeBorder(lineWidth: 2)
+            Text(content)
+                .font(.largeTitle)
+            cardBase.opacity(isFaceUp ? 0 : 1)
         }
+        .aspectRatio(2/3, contentMode: .fit)
         .foregroundColor(.purple)
         .onTapGesture {isFaceUp.toggle()}
     }
@@ -42,10 +42,12 @@ struct ContentView: View {
         .disabled(cardCount + increment < 1 || cardCount + increment > cardFaces.count)
     }
     var cards: some View {
-        HStack {
-            ForEach(0...1, id: \.self) {
-                _ in ForEach(0..<cardCount, id: \.self) {
-                    i in CardView(content: cardFaces[i])
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 90))]) {
+                ForEach(0...1, id: \.self) {
+                    _ in ForEach(0..<cardCount, id: \.self) {
+                        i in CardView(content: cardFaces[i])
+                    }
                 }
             }
         }
@@ -62,6 +64,7 @@ struct ContentView: View {
     var body: some View {
         VStack {
             cards
+            Spacer()
             buttons
         }
         .foregroundStyle(.tint)
