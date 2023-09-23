@@ -10,9 +10,9 @@ import SwiftUI
 struct CardView: View {
     let content: String
     @State var isFaceUp = false
+    let cardBase = RoundedRectangle(cornerRadius: 10)
     var body: some View {
         ZStack {
-            let cardBase = RoundedRectangle(cornerRadius: 10)
             if isFaceUp {
                 cardBase.fill(.white)
                 cardBase.strokeBorder(lineWidth: 2)
@@ -21,21 +21,56 @@ struct CardView: View {
                     .imageScale(.large)
             } else {cardBase}
         }
-        .onTapGesture {isFaceUp .toggle()}
+        .foregroundColor(.purple)
+        .onTapGesture {isFaceUp.toggle()}
     }
 }
 
+
 struct ContentView: View {
-    var body: some View {
-        let cardFaces = ["👻", "💀", "🎃", "😈", "😱", "👹", "☠️", "👽"]
+    let cardFaces = ["👻", "💀", "🎃", "😈", "😱", "👹", "☠️", "👽"]
+    @State var cardCount = 2
+    func makeButton(by increment : Int, symbol : String) -> some View {
+        Button(
+            action: {
+                cardCount += increment
+            },
+            label: {
+                Image(systemName: "rectangle.stack.badge.\(symbol)")
+            }
+        )
+        .disabled(cardCount + increment < 1 || cardCount + increment > cardFaces.count)
+    }
+    var cards: some View {
         HStack {
-            ForEach(cardFaces, id: \.self) { face in CardView(content: face) }
+            ForEach(0...1, id: \.self) {
+                _ in ForEach(0..<cardCount, id: \.self) {
+                    i in CardView(content: cardFaces[i])
+                }
+            }
         }
-        .foregroundColor(.purple)
+    }
+    var buttons: some View {
+        HStack{
+            makeButton(by : -1, symbol : "minus")
+            Spacer()
+            makeButton(by : +1, symbol : "plus")
+        }
+        .font(.largeTitle)
+        .imageScale(.large)
+    }
+    var body: some View {
+        VStack {
+            cards
+            buttons
+        }
         .foregroundStyle(.tint)
         .padding()
     }
 }
+
+
+
 
 #Preview {
     ContentView()
