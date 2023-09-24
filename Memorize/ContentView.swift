@@ -20,7 +20,7 @@ struct CardView: View {
                 .font(.largeTitle)
             cardBase.opacity(isFaceUp ? 0 : 1)
         }
-        .aspectRatio(2/3, contentMode: .fit)
+        .aspectRatio(2/3, contentMode: .fill)
         .onTapGesture {isFaceUp.toggle()}
     }
 }
@@ -52,7 +52,8 @@ struct ContentView: View {
             let bases = cardFaceCollective[index]
             let numPairs = Int.random(in: 4...bases.count)
             let basePairs = (bases[..<numPairs] + bases[..<numPairs]).shuffled()
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 75))]) {
+            let minWidth = 200.0 / sqrt(Double(numPairs))
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: minWidth, maximum: minWidth))]) {
                 ForEach(0..<basePairs.count, id: \.self) {i in CardView(content: basePairs[i])}
             }
         }
