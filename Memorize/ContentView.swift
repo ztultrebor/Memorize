@@ -58,16 +58,18 @@ struct ContentView: View {
             Spacer()
             makeButton(by : +1, symbol : "plus")
         }
-        .font(.largeTitle)
-        .imageScale(.large)
+
     }
     var body: some View {
         VStack {
+            Text("Memorize!").foregroundColor(.purple).bold()
             cards
             Spacer()
             buttons
         }
         .foregroundStyle(.tint)
+        .font(.largeTitle)
+        .imageScale(.large)
         .padding()
     }
 }
