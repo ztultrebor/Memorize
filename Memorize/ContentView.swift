@@ -28,42 +28,54 @@ struct CardView: View {
 
 
 struct ContentView: View {
-    let cardFaces = ["👻", "💀", "🎃", "😈", "😱", "👹", "☠️", "👽"]
-    @State var cardCount = 2
-    func makeButton(by increment : Int, symbol : String) -> some View {
+    let cardFaceCollective = [
+        ["👻", "💀", "🎃", "😈", "😱", "👹", "☠️", "👽"],
+        ["⚽️", "🏀", "🏈", "⚾️", "🎾", "🏓", "🎳", "🥊", "🥌", "🏂"],
+        ["😷", "🚑", "🏥", "🚒", "🩻", "⚕️", "💊"]
+        ]
+    @State var index = 0
+    func makeButton(newIndex : Int, title: String, symbol : String) -> some View {
         Button(
             action: {
-                cardCount += increment
+                index = newIndex
             },
             label: {
-                Image(systemName: "rectangle.stack.badge.\(symbol)")
+                VStack{
+                    Image(systemName: symbol)
+                    Text(title).font(.footnote)
+                }
             }
         )
-        .disabled(cardCount + increment < 1 || cardCount + increment > cardFaces.count)
     }
     var cards: some View {
         ScrollView {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 90))]) {
-                ForEach(0...1, id: \.self) {
-                    _ in ForEach(0..<cardCount, id: \.self) {
-                        i in CardView(content: cardFaces[i])
-                    }
-                }
+            let faces = (cardFaceCollective[index] + cardFaceCollective[index]).shuffled()
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 75))]) {
+                ForEach(0..<faces.count, id: \.self) {i in CardView(content: faces[i])}
             }
         }
     }
     var buttons: some View {
         HStack{
-            makeButton(by : -1, symbol : "minus")
             Spacer()
-            makeButton(by : +1, symbol : "plus")
+            makeButton(newIndex : 0, title: "halloween", symbol : "cloud.moon")
+            Spacer()
+            makeButton(newIndex : 1, title: "sports", symbol : "basketball")
+            Spacer()
+            makeButton(newIndex : 2, title: "medicine", symbol : "cross.case")
+            Spacer()
         }
 
     }
     var body: some View {
         VStack {
-            Text("Memorize!").foregroundColor(.purple).bold()
-            cards
+            Group {
+                Text("Memorize!")                
+                Spacer()
+                cards
+            }
+            .foregroundColor(.purple)
+            .bold()
             Spacer()
             buttons
         }
