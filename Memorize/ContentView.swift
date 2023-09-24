@@ -21,7 +21,6 @@ struct CardView: View {
             cardBase.opacity(isFaceUp ? 0 : 1)
         }
         .aspectRatio(2/3, contentMode: .fit)
-        .foregroundColor(.purple)
         .onTapGesture {isFaceUp.toggle()}
     }
 }
@@ -33,6 +32,7 @@ struct ContentView: View {
         ["⚽️", "🏀", "🏈", "⚾️", "🎾", "🏓", "🎳", "🥊", "🥌", "🏂"],
         ["😷", "🚑", "🏥", "🚒", "🩻", "⚕️", "💊"]
         ]
+    let themeColors: [Color] = [.orange, .green, .blue]
     @State var index = 0
     func makeButton(newIndex : Int, title: String, symbol : String) -> some View {
         Button(
@@ -54,6 +54,7 @@ struct ContentView: View {
                 ForEach(0..<faces.count, id: \.self) {i in CardView(content: faces[i])}
             }
         }
+        .foregroundColor(themeColors[index])
     }
     var buttons: some View {
         HStack{
@@ -69,13 +70,9 @@ struct ContentView: View {
     }
     var body: some View {
         VStack {
-            Group {
-                Text("Memorize!")                
-                Spacer()
-                cards
-            }
-            .foregroundColor(.purple)
-            .bold()
+            Text("Memorize!").bold()
+            Spacer()
+            cards
             Spacer()
             buttons
         }
