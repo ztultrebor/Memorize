@@ -49,9 +49,11 @@ struct ContentView: View {
     }
     var cards: some View {
         ScrollView {
-            let faces = (cardFaceCollective[index] + cardFaceCollective[index]).shuffled()
+            let bases = cardFaceCollective[index]
+            let numPairs = Int.random(in: 4...bases.count)
+            let basePairs = (bases[..<numPairs] + bases[..<numPairs]).shuffled()
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 75))]) {
-                ForEach(0..<faces.count, id: \.self) {i in CardView(content: faces[i])}
+                ForEach(0..<basePairs.count, id: \.self) {i in CardView(content: basePairs[i])}
             }
         }
         .foregroundColor(themeColors[index])
