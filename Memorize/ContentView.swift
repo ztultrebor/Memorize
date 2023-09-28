@@ -54,7 +54,7 @@ struct ContentView: View {
             let basePairs = (bases[..<numPairs] + bases[..<numPairs]).shuffled()
             let minWidth = 200.0 / sqrt(Double(numPairs))
             LazyVGrid(columns: [GridItem(.adaptive(minimum: minWidth, maximum: minWidth))]) {
-                ForEach(0..<basePairs.count, id: \.self) {i in CardView(content: basePairs[i])}
+                ForEach(basePairs.indices, id: \.self) {i in CardView(content: basePairs[i])}
             }
         }
         .foregroundColor(themeColors[index])
