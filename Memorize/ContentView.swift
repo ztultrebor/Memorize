@@ -35,6 +35,7 @@ struct EmojiMemorizeGameView: View {
     @ObservedObject var viewModel: EmojiMemorizeGame
     var cards: some View {
         let themeColors: [Color] = [.orange, .green, .blue]
+        print(viewModel.collectionIndex)
         return ScrollView {
             let numPairs = viewModel.cards.count / 2
             let minWidth = 205.0 / sqrt(Double(numPairs))
@@ -44,7 +45,7 @@ struct EmojiMemorizeGameView: View {
             .foregroundColor(themeColors[viewModel.collectionIndex])
         }
     }
-    func makeButton(newIndex : Int, title: String, symbol : String) -> some View {
+    func makeButton(newIndex: Int, title: String, symbol: String) -> some View {
         Button(
             action: {
                 viewModel.themeChooser(newIndex)

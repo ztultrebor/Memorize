@@ -30,8 +30,10 @@ class EmojiMemorizeGame: ObservableObject {
     //MARK: - Intents
     
     func themeChooser(_ newIndex: Int) {
+        self.collectionIndex = newIndex
         let emojis = cardFaceCollective[newIndex]
         self.model = MemorizeGame(numCardPairs: emojis.count) {pairIndex in emojis[pairIndex]}
+        
     }
     
     func choose(_ card: MemorizeGame<String>.Card) {
