@@ -7,17 +7,25 @@
 
 import Foundation
 
-struct MemoryGame<CardContent> {
+struct MemorizeGame<CardContent> {
+    private(set) var cards: [Card]
+    
+    init(numCardPairs: Int, cardGenerator: (Int)->CardContent) {
+        cards = []
+        for pairsIndex in 0..<max(2, numCardPairs) {
+            cards.append(Card(content: cardGenerator(pairsIndex)))
+            cards.append(Card(content: cardGenerator(pairsIndex)))
+        }
+        cards.shuffle()
+    }
     struct Card {
-        var isFaceUp: Bool
-        var isMatched: Bool
+        var isFaceUp = true
+        var isMatched = false
         var content: CardContent
     }
     
-    var cards: [Card]
-    
-    func choose(card: Card) {
-        
+    func choose(_ card: Card) {
+//        card.isFaceUp.toggle()
     }
     
     

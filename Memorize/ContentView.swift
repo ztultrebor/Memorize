@@ -8,36 +8,46 @@
 import SwiftUI
 
 struct CardView: View {
-    let content: String
-    @State var isFaceUp = false
+    var card: MemorizeGame<String>.Card
+    init(_ card: MemorizeGame<String>.Card) {
+        self.card = card
+    }
+   
     let cardBase = RoundedRectangle(cornerRadius: 10)
     var body: some View {
         ZStack {
             cardBase.fill(.white)
             cardBase
                 .strokeBorder(lineWidth: 2)
-            Text(content)
-                .font(.largeTitle)
-            cardBase.opacity(isFaceUp ? 0 : 1)
+            Text(card.content)
+                .aspectRatio(1, contentMode: .fit)
+            cardBase.opacity(card.isFaceUp ? 0 : 1)
         }
-        .aspectRatio(2/3, contentMode: .fill)
-        .onTapGesture {isFaceUp.toggle()}
+        .aspectRatio(2/3, contentMode: .fit)
+        .font(.system(size: 200))
+        .minimumScaleFactor(0.01)
+//        .onTapGesture {viewModel.choose()}
     }
 }
 
 
-struct ContentView: View {
-    let cardFaceCollective = [
-        ["👻", "💀", "🎃", "😈", "😱", "👹", "☠️", "👽"],
-        ["⚽️", "🏀", "🏈", "⚾️", "🎾", "🏓", "🎳", "🥊", "🥌", "🏂"],
-        ["😷", "🚑", "🏥", "🚒", "🩻", "⚕️", "💊"]
-        ]
-    let themeColors: [Color] = [.orange, .green, .blue]
-    @State var index = 0
+struct EmojiMemorizeGameView: View {
+    @ObservedObject var viewModel: EmojiMemorizeGame
+    var cards: some View {
+        let themeColors: [Color] = [.orange, .green, .blue]
+        return ScrollView {
+            let numPairs = viewModel.cards.count / 2
+            let minWidth = 205.0 / sqrt(Double(numPairs))
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: minWidth), spacing: 0)], spacing: 0) {
+                ForEach(viewModel.cards.indices, id: \.self) {index in CardView(viewModel.cards[index]).padding(4)}
+            }
+            .foregroundColor(themeColors[viewModel.collectionIndex])
+        }
+    }
     func makeButton(newIndex : Int, title: String, symbol : String) -> some View {
         Button(
             action: {
-                index = newIndex
+                viewModel.themeChooser(newIndex)
             },
             label: {
                 VStack{
@@ -47,18 +57,7 @@ struct ContentView: View {
             }
         )
     }
-    var cards: some View {
-        ScrollView {
-            let bases = cardFaceCollective[index]
-            let numPairs = Int.random(in: 4...bases.count)
-            let basePairs = (bases[..<numPairs] + bases[..<numPairs]).shuffled()
-            let minWidth = 200.0 / sqrt(Double(numPairs))
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: minWidth, maximum: minWidth))]) {
-                ForEach(basePairs.indices, id: \.self) {i in CardView(content: basePairs[i])}
-            }
-        }
-        .foregroundColor(themeColors[index])
-    }
+
     var buttons: some View {
         HStack{
             Spacer()
@@ -90,5 +89,5 @@ struct ContentView: View {
 
 
 #Preview {
-    ContentView()
+    EmojiMemorizeGameView(viewModel: EmojiMemorizeGame(collectionIndex: 0))
 }
